@@ -1,0 +1,3 @@
+var documenterSearchIndex = {"docs":
+[{"location":"","page":"Home","title":"Home","text":"CurrentModule = ObjectPools","category":"page"},{"location":"#ObjectPools","page":"Home","title":"ObjectPools","text":"","category":"section"},{"location":"","page":"Home","title":"Home","text":"Documentation for ObjectPools.","category":"page"},{"location":"","page":"Home","title":"Home","text":"","category":"page"},{"location":"","page":"Home","title":"Home","text":"Modules = [ObjectPools]","category":"page"},{"location":"#ObjectPools.TempArray","page":"Home","title":"ObjectPools.TempArray","text":"Thread-safe temporary array for a given type and dimensionality. \n\n\n\n\n\n","category":"type"}]
+}
