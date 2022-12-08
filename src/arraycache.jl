@@ -9,7 +9,7 @@ end
 
 struct CachedArray{T, N} <: AbstractArray{T, N} 
    A::Array{T, N}
-   pool::ArrayCache{T}
+   pool::ArrayCache{T, N}
 end
 
 release!(A::Any) = nothing 

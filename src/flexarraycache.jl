@@ -47,7 +47,7 @@ function FlexArrayCache()
 end
 
 
-function acquire!(c::FlexArrayCache, ::Type{T}, len::Integer) where {T} 
+function acquire!(c::FlexArrayCache, len::Integer, ::Type{T}) where {T} 
    szofT = sizeof(T)
    szofA = len * szofT
    stack = c.vecs[threadid()]
