@@ -13,7 +13,8 @@ include("arraycache.jl")
 
 include("temparray.jl")
 
-# this isn't yet completed 
 include("flexarraycache.jl")
+
+include("flextemparray.jl")
 
 end

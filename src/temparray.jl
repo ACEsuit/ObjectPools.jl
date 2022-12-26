@@ -18,7 +18,7 @@ acquire!(t::TempArray{T, 1}, len::Integer, args...) where {T} =
          acquire!(t, (len,), args...)
 
 acquire!(t::TempArray{T, N}, sz::NTuple{N, Int}, ::Type{S}) where {T, N, S} = 
-   Array{T, N}(undef, sz)
+   Array{S, N}(undef, sz)
 
 acquire!(c::TempArray{T, N}, sz::NTuple{N, Int}, ::Type{T}) where {T, N} = 
    acquire!(c, sz) 

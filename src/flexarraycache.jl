@@ -46,10 +46,14 @@ function FlexArrayCache()
    return FlexArrayCache(vecs)
 end
 
+acquire!(c::FlexArrayCache, len::Integer, args...) = 
+      acquire!(c, (len,), args...)
 
-function acquire!(c::FlexArrayCache, len::Integer, ::Type{T}) where {T} 
+
+function acquire!(c::FlexArrayCache, sz::NTuple{N, <:Integer}, ::Type{T}
+                 ) where {N, T} 
    szofT = sizeof(T)
-   szofA = len * szofT
+   szofA = prod(sz) * szofT
    stack = c.vecs[threadid()]
    if isempty(stack)
       _A = Vector{UInt8}(undef, szofA)
@@ -62,7 +66,7 @@ function acquire!(c::FlexArrayCache, len::Integer, ::Type{T}) where {T}
 
    ptr = Base.unsafe_convert(Ptr{T}, _A)
    # A = Base.unsafe_wrap(Array, ptr, len)
-   A = UnsafeArray(ptr, (len,))
+   A = UnsafeArray(ptr, sz)
    return FlexCachedArray(A, _A, c)
 end
 

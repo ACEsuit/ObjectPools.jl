@@ -1,10 +1,16 @@
 
 using ObjectPools, BenchmarkTools, SparseArrays, LinearAlgebra
-using ObjectPools: FlexArrayCache, ArrayCache
+using ObjectPools: FlexArrayCache, ArrayCache, FlexTempArray
 
 
 _btime = true 
 _benchmark = false 
+
+function runn(N, f, args...)
+   for _=1:N
+      f(args...)
+   end
+end
 
 ## 
 
@@ -19,6 +25,7 @@ y = zeros(1_000)
 flexcache = FlexArrayCache()
 cache = ArrayCache{Float64, 1}()
 temp = TempArray{Float64, 1}( (size(A, 1),) )
+flextemp = FlexTempArray()
 
 function f!(y::Vector, A, x)
    mul!(y, A, x)
@@ -38,24 +45,32 @@ function f2(A, x)
 end
 
 @info("in-place")
-_btime     && @btime f!($y, $A, $x)
+_btime     && @btime runn(1000, $f!, $y, $A, $x)
 _benchmark && display(@benchmark f!($y, $A, $x))
 
 @info("typed temp")
-_btime     && @btime f1($A, $x, $temp)
-_benchmark && display(@benchmark f1($y, $A, $temp))
+_btime     && @btime runn(1000, $f1, $A, $x, $temp)
+_benchmark && display(@benchmark f1($A, $x, $temp))
 
-@info("flex-cache")
-_btime     && @btime f1($A, $x, $flexcache)
-_benchmark && display(@benchmark f1($A, $x, $flexcache))
+@info("flex temp")
+_btime     && @btime runn(1000, $f1, $A, $x, $flextemp)
+_benchmark && display(@benchmark f1($A, $x, $flextemp))
 
-@info("typed-cache")
-_btime     && @btime f1($A, $x, $cache)
+@info("typed cache")
+_btime     && @btime runn(1000, $f1, $A, $x, $cache)
 _benchmark && display(@benchmark f1($A, $x, $cache))
 
+@info("flex cache")
+_btime     && @btime runn(1000, $f1, $A, $x, $flexcache)
+_benchmark && display(@benchmark f1($A, $x, $flexcache))
+
 @info("allocating")
-_btime     && @btime f2($A, $x)
+_btime     && @btime runn(1000, $f2, $A, $x)
 _benchmark && display(@benchmark f2($A, $x))
+
+@info("in-place again")
+_btime     && @btime runn(1000, $f!, $y, $A, $x)
+_benchmark && display(@benchmark f!($y, $A, $x))
 
 ##
 
@@ -72,8 +87,13 @@ x = randn()
 flexcache = FlexArrayCache()
 cache = ArrayCache{Float64, 1}()
 temp = TempArray{Float64, 1}( (length(A),) )
+flextemp = FlexTempArray()
+nt_temp = (y = FlexTempArray(), a = FlexTempArray(), c = FlexTempArray())
+dict_temp = Dict(:y => FlexTempArray(), :a => FlexTempArray(), :c => FlexTempArray())
 
 function g!(y, x, A, B, C)
+   @assert length(y) >= length(A)
+   @assert length(A) == length(B) == length(C)
    y[1] = A[1] 
    y[2] = (A[2] * x + B[2]) * y[2]
    @inbounds for n = 3:size(A, 1)
@@ -90,6 +110,10 @@ function g1(x, A, B, C, cache)
    return nothing; 
 end
 
+g1(x, A, B, C, multicache::Union{NamedTuple, Dict}) = 
+   g1(x, A, B, C, multicache[:y])
+
+
 function g2(x, A, B, C) 
    TY = promote_type(typeof(x), eltype(A))
    y = Vector{TY}(undef, size(A, 1))
@@ -99,23 +123,37 @@ end
 
 
 @info("in-place")
-_btime     && @btime g!($y, $x, $A, $B, $C) 
+_btime     && @btime runn(1000, $g!, $y, $x, $A, $B, $C) 
 _benchmark && display(@benchmark g!($y, $x, $A, $B, $C)  )
 
 @info("typed temp")
-_btime     && @btime g1($x, $A, $B, $C, $temp) 
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $temp) 
 _benchmark && display(@benchmark g1($x, $A, $B, $C, $temp)  )
 
-@info("flex-cache")
-_btime     && @btime g1($x, $A, $B, $C, $flexcache) 
-_benchmark && display(@benchmark g1($x, $A, $B, $C, $flexcache)  )
+@info("flex temp")
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $flextemp) 
+_benchmark && display(@benchmark g1($x, $A, $B, $C, $flextemp)  )
 
-@info("typed-cache")
-_btime     && @btime g1($x, $A, $B, $C, $cache) 
+@info("typed cache")
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $cache) 
 _benchmark && display(@benchmark g1($x, $A, $B, $C, $cache)  )
 
+@info("flex cache")
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $flexcache) 
+_benchmark && display(@benchmark g1($x, $A, $B, $C, $flexcache)  )
+
 @info("with allocation")
-_btime     && @btime g2($x, $A, $B, $C) 
+_btime     && @btime runn(1000, $g2, $x, $A, $B, $C) 
 _benchmark && display(@benchmark g2($x, $A, $B, $C)  )
 
+@info("in-place again")
+_btime     && @btime runn(1000, $g!, $y, $x, $A, $B, $C) 
+_benchmark && display(@benchmark g!($y, $x, $A, $B, $C)  )
 
+@info("nt flex temp")
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $nt_temp) 
+_benchmark && display(@benchmark g1($x, $A, $B, $C, $nt_temp)  )
+
+@info("dict flex temp")
+_btime     && @btime runn(1000, $g1, $x, $A, $B, $C, $dict_temp) 
+_benchmark && display(@benchmark g1($x, $A, $B, $C, $dict_temp)  )
