@@ -1,9 +1,8 @@
-using UnsafeArrays
+
 
 struct FlexArrayCache
    vecs::Vector{Stack{Vector{UInt8}}}
 end
-
 
 struct FlexCachedArray{T, N} <: AbstractArray{T, N}
    A::UnsafeArray{T, N}

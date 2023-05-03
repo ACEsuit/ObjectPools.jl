@@ -2,6 +2,8 @@ using Base.Threads: threadid, nthreads
 
 export FlexTempArray
 
+
+
 """
 Thread-safe temporary array for a given type and dimensionality. 
 """
@@ -28,15 +30,11 @@ function acquire!(c::FlexTempArray, sz::NTuple{N, <: Integer}, ::Type{T}
       c.t[tid] = A
    end
 
-   ptr = Base.unsafe_convert(Ptr{T}, A)
-   return UnsafeArray(ptr, sz)
+   Aptr = PtrArray(A) 
+   return reshape(reinterpret(T, Aptr), sz)
+
+   # old version with UnsafeArrays
+   # ptr = Base.unsafe_convert(Ptr{T}, A)
+   # return UnsafeArray(ptr, sz)
    # return FlexTemp(UnsafeArray(ptr, sz), A) 
 end
-
-
-# struct FlexTemp{T, N} <: AbstractArray{T, N}
-#    A::UnsafeArray{T, N}
-#    _A::Vector{UInt8}
-# end
-
-# Base.parent(A::FlexTemp) = A.A
