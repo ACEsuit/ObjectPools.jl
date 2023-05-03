@@ -30,11 +30,5 @@ function acquire!(c::FlexTempArray, sz::NTuple{N, <: Integer}, ::Type{T}
       c.t[tid] = A
    end
 
-   Aptr = PtrArray(A) 
-   return reshape(reinterpret(T, Aptr), sz)
-
-   # old version with UnsafeArrays
-   # ptr = Base.unsafe_convert(Ptr{T}, A)
-   # return UnsafeArray(ptr, sz)
-   # return FlexTemp(UnsafeArray(ptr, sz), A) 
+   return return _convert(A, sz, T)
 end
