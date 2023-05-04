@@ -121,6 +121,6 @@ The `acquire!` function obtains an array of size `(N,)` from the stack (in the c
 A pool is a dictionary of temporary arrays or array caches indexed by symbols. It enables the management of many temporary arrays (or caches) within a single field. For example, 
 ```julia 
 pool = ArrayPool(FlexTempArray)
-A = acquire(pool, :A, (10, 10), Float64) 
-B = acquire(pool, :B, (10, 100), ComplexF64)
+A = acquire!(pool, :A, (10, 10), Float64) 
+B = acquire!(pool, :B, (10, 100), ComplexF64)
 ```
