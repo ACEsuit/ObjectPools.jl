@@ -1,18 +1,16 @@
-using UnsafeArrays
+
 
 struct FlexArrayCache
    vecs::Vector{Stack{Vector{UInt8}}}
 end
 
-
-struct FlexCachedArray{T, N} <: AbstractArray{T, N}
-   A::UnsafeArray{T, N}
+struct FlexCachedArray{TA} 
+   A::TA
    _A::Vector{UInt8}
    pool::FlexArrayCache
 end
 
 
-# release!(A::Any) = nothing 
 release!(pA::FlexCachedArray) = release!(pA.pool, pA)
 
 using Base: @propagate_inbounds
@@ -26,10 +24,6 @@ end
    @boundscheck checkbounds(pA.A, I...)
    @inbounds pA.A[I...] = val
 end
-
-# Base.getindex(pA::CachedArray, args...) = getindex(pA.A, args...)
-
-# Base.setindex!(pA::CachedArray, args...) = setindex!(pA.A, args...)
 
 Base.length(pA::FlexCachedArray) = length(pA.A)
 
@@ -61,17 +55,9 @@ function acquire!(c::FlexArrayCache, sz::NTuple{N, <:Integer}, ::Type{T}
       _A = pop!(stack)
       resize!(_A, szofA)
    end
-   # A = reinterpret(T, _A)
-   # return FlexCachedArray(A, c)
 
-   ptr = Base.unsafe_convert(Ptr{T}, _A)
-   # A = Base.unsafe_wrap(Array, ptr, len)
-   A = UnsafeArray(ptr, sz)
-   return FlexCachedArray(A, _A, c)
+   return FlexCachedArray(_convert(_A, sz, T), _A, c)
 end
-
-# release!(c::FlexArrayCache, cA::FlexCachedArray) = 
-#       push!(c.vecs[threadid()], parent(cA.A))
 
 release!(c::FlexArrayCache, cA::FlexCachedArray) = 
       push!(c.vecs[threadid()], cA._A)
