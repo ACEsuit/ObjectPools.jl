@@ -56,7 +56,7 @@ function acquire!(c::FlexArrayCache, sz::NTuple{N, <:Integer}, ::Type{T}
       resize!(_A, szofA)
    end
 
-   return _convert(_A, sz, T)
+   return FlexCachedArray(_convert(_A, sz, T), _A, c)
 end
 
 release!(c::FlexArrayCache, cA::FlexCachedArray) = 
