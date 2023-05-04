@@ -6,6 +6,80 @@
 
 Implementation of flexible and thread-safe temporary arrays and array pools for situations where a little bit of semi-manual memory management improves performance. Used quite heavily throughout the ACE codebase, can lead to performance gains anywhere between 0 and 50%. 
 
+The following Table shows a basic benchmark for evaluating a Chebyshev basis, for multiple inputs at the same time. This is a typical use-case for which this package is intended: the cost of arithmetic is on the same order of magnitude as the cost of allocation. 
+
+<!-- Runtimes of Chebyshev Basis Evaluation in Batches -->
+**Format : min-time / mean-time in ns**
+<table>
+  <thead>
+    <tr class = "header headerLastRow">
+      <th style = "text-align: right;">nB / nX</th>
+      <th style = "text-align: right;">10 / 16</th>
+      <th style = "text-align: right;">10 / 32</th>
+      <th style = "text-align: right;">30 / 16</th>
+      <th style = "text-align: right;">30 / 32</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style = "text-align: right;">Array</td>
+      <td style = "text-align: right;">147 / 262</td>
+      <td style = "text-align: right;">164 / 548</td>
+      <td style = "text-align: right;">376 / 827</td>
+      <td style = "text-align: right;">414 / 1167</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">pre-allocated</td>
+      <td style = "text-align: right;">79 / 83</td>
+      <td style = "text-align: right;">67 / 67</td>
+      <td style = "text-align: right;">261 / 269</td>
+      <td style = "text-align: right;">230 / 237</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">TempArray</td>
+      <td style = "text-align: right;">75 / 77</td>
+      <td style = "text-align: right;">67 / 67</td>
+      <td style = "text-align: right;">259 / 270</td>
+      <td style = "text-align: right;">230 / 238</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">FlexTempArray</td>
+      <td style = "text-align: right;">90 / 93</td>
+      <td style = "text-align: right;">66 / 67</td>
+      <td style = "text-align: right;">267 / 274</td>
+      <td style = "text-align: right;">261 / 273</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">ArrayPool(FlexTemp)</td>
+      <td style = "text-align: right;">92 / 94</td>
+      <td style = "text-align: right;">69 / 70</td>
+      <td style = "text-align: right;">265 / 273</td>
+      <td style = "text-align: right;">262 / 274</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">ArrayCache</td>
+      <td style = "text-align: right;">130 / 256</td>
+      <td style = "text-align: right;">153 / 531</td>
+      <td style = "text-align: right;">344 / 754</td>
+      <td style = "text-align: right;">343 / 1159</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">FlexArrayCache</td>
+      <td style = "text-align: right;">136 / 257</td>
+      <td style = "text-align: right;">162 / 523</td>
+      <td style = "text-align: right;">343 / 770</td>
+      <td style = "text-align: right;">344 / 1254</td>
+    </tr>
+    <tr>
+      <td style = "text-align: right;">ArrayPool(FlexCache)</td>
+      <td style = "text-align: right;">139 / 268</td>
+      <td style = "text-align: right;">175 / 544</td>
+      <td style = "text-align: right;">346 / 772</td>
+      <td style = "text-align: right;">358 / 1200</td>
+    </tr>
+  </tbody>
+</table>
+
 ### Temporary Arrays
 
 `ObjectPools.jl` exports `TempArray` and `FlexTempArray`, which - as the name suggests - can be used to store temporary arrays that are *somewhat* thread-safe.  They are constructed as follows: 
