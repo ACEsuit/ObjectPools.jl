@@ -18,6 +18,8 @@ tests = Dict(
    "FlexArrayCache" => FlexArrayCache(),
    "ArrayPool(FlexArray)" => ArrayPool(FlexArray),
    "ArrayPool(FlexArrayCache)" => ArrayPool(FlexArrayCache),
+   "TSafe(FlexArray)" => TSafe(FlexArray()),
+   "TSafe(ArrayPool(FlexArray))" => TSafe(ArrayPool(FlexArray)),
 )
 results = Dict()
 for key in keys(tests)
@@ -48,6 +50,8 @@ ordered_keys = [
          "ArrayPool(FlexArray)",
          "FlexArrayCache",
          "ArrayPool(FlexArrayCache)", 
+         "TSafe(FlexArray)",
+         "TSafe(ArrayPool(FlexArray))",
          ]
 
 _make_entry(tt) = "$(round(Int,tt[1])) / $(round(Int, tt[2]))"

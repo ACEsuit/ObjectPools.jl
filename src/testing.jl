@@ -1,7 +1,7 @@
 
 module Testing
 
-using ObjectPools: acquire!, release!, FlexArray, FlexArrayCache, ArrayPool
+using ObjectPools: acquire!, release!, FlexArray, FlexArrayCache, ArrayPool, TSafe
 
 
 function chebbasis!(T, x::Real) 
@@ -47,13 +47,13 @@ function chebbasis(A::Vector, x::Real, N)
    return chebbasis!(A, x)
 end
 
-function chebbasis(pool::ArrayPool, x::Real, N) 
+function chebbasis(pool::Union{ArrayPool, TSafe{<: ArrayPool}}, x::Real, N) 
    T = acquire!(pool, :T, (N,), typeof(x))
    chebbasis!(parent(T), x) 
    return T 
 end
 
-function chebbasis(temp::Union{FlexArray, FlexArrayCache}, x::Real, N)
+function chebbasis(temp::Union{FlexArray, FlexArrayCache, TSafe}, x::Real, N)
    T = acquire!(temp, (N,), typeof(x))
    chebbasis!(parent(T), x) 
    return T 
@@ -68,13 +68,13 @@ function chebbasis(A::Matrix, X::AbstractVector{<: Real}, N)
    return chebbasis!(A, X)
 end
 
-function chebbasis(pool::ArrayPool, X::AbstractVector{<: Real}, N) 
+function chebbasis(pool::Union{ArrayPool, TSafe{<: ArrayPool}}, X::AbstractVector{<: Real}, N) 
    T = acquire!(pool, :T, (length(X), N), eltype(X))
    chebbasis!(parent(T), X) 
    return T 
 end
 
-function chebbasis(temp::Union{FlexArray, FlexArrayCache}, X::AbstractVector{<: Real}, N) 
+function chebbasis(temp::Union{FlexArray, FlexArrayCache, TSafe}, X::AbstractVector{<: Real}, N) 
    T = acquire!(temp, (length(X), N), eltype(X))
    chebbasis!(parent(T), X) 
    return T 

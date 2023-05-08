@@ -13,6 +13,8 @@ for N in [30, 100, 300, 1000]
    A3 = ArrayPool(FlexArray)
    A4 = FlexArrayCache()
    A5 = ArrayPool(FlexArrayCache)
+   A6 = TSafe(FlexArray())
+   A7 = TSafe(ArrayPool(FlexArrayCache))
 
    x = rand() 
 
@@ -22,8 +24,10 @@ for N in [30, 100, 300, 1000]
    B3 = chebbasis(A3, x, N)
    B4 = chebbasis(A4, x, N)
    B5 = chebbasis(A5, x, N)
+   B6 = chebbasis(A6, x, N)
+   B7 = chebbasis(A7, x, N)
 
-   println(@test B0 == B1 == B2 == B3 == parent(B4) == parent(B5)) 
+   println(@test B0 == B1 == B2 == B3 == parent(B4) == parent(B5) == B6 == parent(B7)) 
 end
 
 ##
