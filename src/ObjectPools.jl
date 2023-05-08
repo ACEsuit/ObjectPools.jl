@@ -9,12 +9,10 @@ using StrideArrays: PtrArray
 
 export acquire!, 
        release!, 
-       ArrayCache, 
+       FlexArray,
+       ArrayPool,
        FlexArrayCache, 
-       TempArray, 
-       FlexTempArray, 
-       ArrayPool
-
+       TSafe
 
 function _convert(A::Vector{UInt8}, sz::NTuple{N, <: Integer}, ::Type{T}
                   ) where {T, N}
@@ -24,21 +22,13 @@ function _convert(A::Vector{UInt8}, sz::NTuple{N, <: Integer}, ::Type{T}
    return Aptr_T_sz
 end
 
-# old version with UnsafeArrays
-# ptr = Base.unsafe_convert(Ptr{T}, A)
-# return UnsafeArray(ptr, sz)
-# return FlexTemp(UnsafeArray(ptr, sz), A) 
+release!(::Any) = nothing 
 
-
-include("arraycache.jl")     
-
-include("temparray.jl")
-
+include("threadsafe.jl")
+include("flexarray.jl")
 include("flexarraycache.jl")
-
-include("flextemparray.jl")
-
-
 include("arraypool.jl")
+
+include("testing.jl")
 
 end
