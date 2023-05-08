@@ -1,11 +1,11 @@
 
 
 struct FlexArrayCache
-   vecs::Vector{Stack{Vector{UInt8}}}
+   vecs::Stack{Vector{UInt8}}
 end
 
-struct FlexCachedArray{TA} 
-   A::TA
+struct FlexCachedArray{T, N, V1, V2, V3, V4}
+   A::PtrArray{T, N, V1, V2, V3, V4}
    _A::Vector{UInt8}
    pool::FlexArrayCache
 end
@@ -34,11 +34,7 @@ Base.size(pA::FlexCachedArray, args...) = size(pA.A, args...)
 Base.parent(pA::FlexCachedArray) = pA.A
 
 
-function FlexArrayCache() 
-   nt = nthreads()
-   vecs = [ Stack{Vector{UInt8}}() for _=1:nt ]
-   return FlexArrayCache(vecs)
-end
+FlexArrayCache() = FlexArrayCache(Stack{Vector{UInt8}}())
 
 acquire!(c::FlexArrayCache, len::Integer, args...) = 
       acquire!(c, (len,), args...)
@@ -48,7 +44,7 @@ function acquire!(c::FlexArrayCache, sz::NTuple{N, <:Integer}, ::Type{T}
                  ) where {N, T} 
    szofT = sizeof(T)
    szofA = prod(sz) * szofT
-   stack = c.vecs[threadid()]
+   stack = c.vecs
    if isempty(stack)
       _A = Vector{UInt8}(undef, szofA)
    else 
@@ -60,4 +56,4 @@ function acquire!(c::FlexArrayCache, sz::NTuple{N, <:Integer}, ::Type{T}
 end
 
 release!(c::FlexArrayCache, cA::FlexCachedArray) = 
-      push!(c.vecs[threadid()], cA._A)
+      push!(c.vecs, cA._A)
