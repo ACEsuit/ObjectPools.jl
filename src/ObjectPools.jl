@@ -12,10 +12,7 @@ export acquire!,
        FlexArray,
        ArrayPool,
        FlexArrayCache, 
-       ThreadSafe
-       # ArrayCache, 
-       # TempArray, 
-
+       TSafe
 
 function _convert(A::Vector{UInt8}, sz::NTuple{N, <: Integer}, ::Type{T}
                   ) where {T, N}
@@ -32,7 +29,6 @@ include("flexarray.jl")
 include("flexarraycache.jl")
 include("arraypool.jl")
 
-# include("arraycache.jl")     
-# include("temparray.jl")
+include("testing.jl")
 
 end

@@ -1,11 +1,11 @@
 
-struct ThreadSafe{T}
+struct TSafe{T}
    t::Vector{T} 
 end
 
-ThreadSafe(t1) = ThreadSafe( [ deepcopy(t1) for _ = 1:nthreads() ] )
+TSafe(t1) = TSafe( [ deepcopy(t1) for _ = 1:nthreads() ] )
 
-function acquire!(c::ThreadSafe, args...)
+function acquire!(c::TSafe, args...)
    tid = threadid()
    return acquire!(c.t[tid], args...)
 end
