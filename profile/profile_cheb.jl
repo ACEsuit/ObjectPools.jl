@@ -61,7 +61,12 @@ tbl_data = vcat( [_make_row(key) for key in ordered_keys]... )
 
 println("Runtimes of Chebyshev Basis Evaluation in Batches")
 println(" Format : min-time / mean-time in µs")
+
+pretty_table(tbl_data; header=header, 
+             formatters=ft_printf("%.0f"),
+             backend = Val(:html))
+
 pretty_table(tbl_data; header=header, 
              formatters=ft_printf("%.0f"),)
-            #  backend = Val(:html))
+
 
