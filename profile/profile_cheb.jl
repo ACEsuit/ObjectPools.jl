@@ -47,12 +47,14 @@ end
 
 function chebbasis(pool::ArrayPool, x::Real, N) 
    T = acquire!(pool, :T, (N,), typeof(x))
-   return chebbasis!(parent(T), x) 
+   chebbasis!(parent(T), x) 
+   return T 
 end
 
 function chebbasis(temp::Union{TempArray, FlexTempArray, ArrayCache, FlexArrayCache}, x::Real, N) 
    T = acquire!(temp, (N,), typeof(x))
-   return chebbasis!(parent(T), x) 
+   chebbasis!(parent(T), x) 
+   return T 
 end
 
 function chebbasis(::Nothing, X::AbstractVector{<: Real}, N) 
@@ -66,12 +68,14 @@ end
 
 function chebbasis(pool::ArrayPool, X::AbstractVector{<: Real}, N) 
    T = acquire!(pool, :T, (length(X), N), eltype(X))
-   return chebbasis!(parent(T), X) 
+   chebbasis!(parent(T), X) 
+   return T 
 end
 
 function chebbasis(temp::Union{TempArray, FlexTempArray, ArrayCache, FlexArrayCache}, X::AbstractVector{<: Real}, N) 
    T = acquire!(temp, (length(X), N), eltype(X))
-   return chebbasis!(parent(T), X) 
+   chebbasis!(parent(T), X) 
+   return T 
 end
 
 
@@ -159,6 +163,8 @@ for nB in [10, 30], nX in [16, 32]
    X = rand(nX)
    @info("nB = $nB, nX = $nX")
    for (key, A) in tests 
+      # warmup 
+      B = chebbasis(A, X, nB); release!(B)
       bm = @benchmark (B = chebbasis($A, $X, $nB); release!(B); )
       t_min = minimum(bm.times)
       t_mean = mean(bm.times)
@@ -187,5 +193,6 @@ tbl_data = vcat( [_make_row(key) for key in ordered_keys]... )
 println("Runtimes of Chebyshev Basis Evaluation in Batches")
 println(" Format : min-time / mean-time in µs")
 pretty_table(tbl_data; header=header, 
-             formatters=ft_printf("%.0f"),)
-            #  backend = Val(:html))
+             formatters=ft_printf("%.0f"),
+             backend = Val(:html))
+

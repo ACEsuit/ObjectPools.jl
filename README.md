@@ -9,7 +9,6 @@ Implementation of flexible and thread-safe temporary arrays and array pools for 
 The following Table shows a basic benchmark for evaluating a Chebyshev basis, for multiple inputs at the same time. This is a typical use-case for which this package is intended: the cost of arithmetic is on the same order of magnitude as the cost of allocation. 
 
 <!-- Runtimes of Chebyshev Basis Evaluation in Batches -->
-**Format : min-time / mean-time in ns**
 <table>
   <thead>
     <tr class = "header headerLastRow">
@@ -23,59 +22,59 @@ The following Table shows a basic benchmark for evaluating a Chebyshev basis, fo
   <tbody>
     <tr>
       <td style = "text-align: right;">Array</td>
-      <td style = "text-align: right;">147 / 262</td>
-      <td style = "text-align: right;">164 / 548</td>
-      <td style = "text-align: right;">376 / 827</td>
-      <td style = "text-align: right;">414 / 1167</td>
+      <td style = "text-align: right;">157 / 294</td>
+      <td style = "text-align: right;">186 / 548</td>
+      <td style = "text-align: right;">381 / 813</td>
+      <td style = "text-align: right;">426 / 1187</td>
     </tr>
     <tr>
       <td style = "text-align: right;">pre-allocated</td>
-      <td style = "text-align: right;">79 / 83</td>
-      <td style = "text-align: right;">67 / 67</td>
-      <td style = "text-align: right;">261 / 269</td>
-      <td style = "text-align: right;">230 / 237</td>
+      <td style = "text-align: right;">94 / 96</td>
+      <td style = "text-align: right;">81 / 82</td>
+      <td style = "text-align: right;">268 / 277</td>
+      <td style = "text-align: right;">227 / 229</td>
     </tr>
     <tr>
       <td style = "text-align: right;">TempArray</td>
-      <td style = "text-align: right;">75 / 77</td>
-      <td style = "text-align: right;">67 / 67</td>
-      <td style = "text-align: right;">259 / 270</td>
-      <td style = "text-align: right;">230 / 238</td>
+      <td style = "text-align: right;">93 / 96</td>
+      <td style = "text-align: right;">81 / 82</td>
+      <td style = "text-align: right;">269 / 277</td>
+      <td style = "text-align: right;">227 / 229</td>
     </tr>
     <tr>
       <td style = "text-align: right;">FlexTempArray</td>
-      <td style = "text-align: right;">90 / 93</td>
-      <td style = "text-align: right;">66 / 67</td>
-      <td style = "text-align: right;">267 / 274</td>
-      <td style = "text-align: right;">261 / 273</td>
+      <td style = "text-align: right;">101 / 103</td>
+      <td style = "text-align: right;">86 / 89</td>
+      <td style = "text-align: right;">275 / 283</td>
+      <td style = "text-align: right;">222 / 228</td>
     </tr>
     <tr>
       <td style = "text-align: right;">ArrayPool(FlexTemp)</td>
-      <td style = "text-align: right;">92 / 94</td>
-      <td style = "text-align: right;">69 / 70</td>
-      <td style = "text-align: right;">265 / 273</td>
-      <td style = "text-align: right;">262 / 274</td>
+      <td style = "text-align: right;">106 / 108</td>
+      <td style = "text-align: right;">91 / 96</td>
+      <td style = "text-align: right;">276 / 284</td>
+      <td style = "text-align: right;">226 / 236</td>
     </tr>
     <tr>
       <td style = "text-align: right;">ArrayCache</td>
-      <td style = "text-align: right;">130 / 256</td>
-      <td style = "text-align: right;">153 / 531</td>
-      <td style = "text-align: right;">344 / 754</td>
-      <td style = "text-align: right;">343 / 1159</td>
+      <td style = "text-align: right;">111 / 112</td>
+      <td style = "text-align: right;">92 / 93</td>
+      <td style = "text-align: right;">283 / 291</td>
+      <td style = "text-align: right;">239 / 240</td>
     </tr>
     <tr>
       <td style = "text-align: right;">FlexArrayCache</td>
-      <td style = "text-align: right;">136 / 257</td>
-      <td style = "text-align: right;">162 / 523</td>
-      <td style = "text-align: right;">343 / 770</td>
-      <td style = "text-align: right;">344 / 1254</td>
+      <td style = "text-align: right;">113 / 117</td>
+      <td style = "text-align: right;">89 / 90</td>
+      <td style = "text-align: right;">287 / 295</td>
+      <td style = "text-align: right;">283 / 296</td>
     </tr>
     <tr>
       <td style = "text-align: right;">ArrayPool(FlexCache)</td>
-      <td style = "text-align: right;">139 / 268</td>
-      <td style = "text-align: right;">175 / 544</td>
-      <td style = "text-align: right;">346 / 772</td>
-      <td style = "text-align: right;">358 / 1200</td>
+      <td style = "text-align: right;">121 / 123</td>
+      <td style = "text-align: right;">95 / 97</td>
+      <td style = "text-align: right;">295 / 303</td>
+      <td style = "text-align: right;">288 / 301</td>
     </tr>
   </tbody>
 </table>
