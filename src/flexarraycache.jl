@@ -4,7 +4,9 @@ struct FlexArrayCache
    vecs::Stack{Vector{UInt8}}
 end
 
-struct FlexCachedArray{T, N, V1, V2, V3, V4}
+# ----------------------------------- 
+# FlexCachedArray implementation 
+struct FlexCachedArray{T, N, V1, V2, V3, V4} <: AbstractArray{T, N}
    A::PtrArray{T, N, V1, V2, V3, V4}
    _A::Vector{UInt8}
    pool::FlexArrayCache
@@ -33,6 +35,9 @@ Base.size(pA::FlexCachedArray, args...) = size(pA.A, args...)
 
 Base.parent(pA::FlexCachedArray) = pA.A
 
+
+# ----------------------------------- 
+# FlexArrayCache implementation
 
 FlexArrayCache() = FlexArrayCache(Stack{Vector{UInt8}}())
 
