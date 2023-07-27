@@ -26,8 +26,31 @@ for N in [30, 100, 300, 1000]
    B5 = chebbasis(A5, x, N)
    B6 = chebbasis(A6, x, N)
    B7 = chebbasis(A7, x, N)
-
-   println(@test B0 == B1 == B2 == B3 == parent(B4) == parent(B5) == B6 == parent(B7)) 
+   
+   println(@test B0 == B1 == B2 == B3 == unwrap(B4) == unwrap(B5) == B6 == unwrap(B7)) 
 end
+
+##
+
+using StrideArrays: PtrArray
+
+@info("Test unwrap")
+for N in [30, 100, 300, 1000]
+   x = rand()
+   A = FlexArrayCache()
+   B = chebbasis(A, x, N)
+   Bt = B'
+   println(@test unwrap(Bt) == B' && unwrap(Bt) isa PtrArray)
+end
+
+@info("Check parent function is deprecated")
+A4 = FlexArrayCache()
+x = rand()
+N = 30
+B4 = chebbasis(A4, x, N)
+parent(B4);
+
+
+
 
 ##
