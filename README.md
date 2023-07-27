@@ -104,6 +104,15 @@ release!(A)
 ```
 The `acquire!` function obtains an array of size `(N,)` from the stack (in the current thread). After the array is no longer needed, it can be returned to the stack via `release!`. It is ok if it is never released. Once there is no longer a reference to `A`, it will just be garbage collected. 
 
+One can also use the `unwrap` function to get the `PtrArray` of a FlexCachedArray:
+```julia
+cache = FlexArrayCache()
+A = acquire!(cache, (N, ), Float64)
+Aptr = unwrap(A)
+```
+
+Warning: Use of `parent` to obtain the `PtrArray` of a FlexCachedArray is deprecated. Always use `unwrap` instead.
+
 ### Array Pools 
 
 A pool is a dictionary of temporary arrays or array caches indexed by symbols. It enables the management of many temporary arrays (or caches) within a single field. For example, 
