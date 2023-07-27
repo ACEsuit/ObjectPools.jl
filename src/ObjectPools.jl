@@ -5,14 +5,15 @@ function release! end
 
 using Base.Threads: threadid, nthreads
 using DataStructures: Stack 
-using StrideArrays: PtrArray
+using StrideArrays: PtrArray, Adjoint
 
 export acquire!, 
        release!, 
        FlexArray,
        ArrayPool,
        FlexArrayCache, 
-       TSafe
+       TSafe,
+       unwrap
 
 function _convert(A::Vector{UInt8}, sz::NTuple{N, <: Integer}, ::Type{T}
                   ) where {T, N}

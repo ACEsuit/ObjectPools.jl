@@ -33,7 +33,13 @@ Base.eltype(pA::FlexCachedArray) = eltype(pA.A)
 
 Base.size(pA::FlexCachedArray, args...) = size(pA.A, args...)
 
-Base.parent(pA::FlexCachedArray) = pA.A
+unwrap(adj::Adjoint{TT, <: FlexCachedArray} ) where {TT} = unwrap(parent(adj))'
+
+unwrap(x::FlexCachedArray) = x.A
+
+unwrap(x::Array) = x
+
+# @deprecate Base.parent(pA::FlexCachedArray) unwrap(pA)
 
 
 # ----------------------------------- 
