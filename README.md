@@ -111,7 +111,7 @@ A = acquire!(cache, (N, ), Float64)
 Aptr = unwrap(A)
 ```
 
-Warning: Use of `parent` to obtain the `PtrArray` of a FlexCachedArray is deprecated. Always use `unwrap` instead.
+Warning: Use of `parent` to obtain the `PtrArray` of a `FlexCachedArray` is deprecated. Always use `unwrap` instead.
 
 ### Array Pools 
 
