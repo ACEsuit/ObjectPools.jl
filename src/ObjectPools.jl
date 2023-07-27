@@ -5,7 +5,8 @@ function release! end
 
 using Base.Threads: threadid, nthreads
 using DataStructures: Stack 
-using StrideArrays: PtrArray, Adjoint
+using StrideArrays: PtrArray
+using LinearAlgebra: Adjoint, Transpose 
 
 export acquire!, 
        release!, 

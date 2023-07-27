@@ -33,13 +33,33 @@ Base.eltype(pA::FlexCachedArray) = eltype(pA.A)
 
 Base.size(pA::FlexCachedArray, args...) = size(pA.A, args...)
 
-unwrap(adj::Adjoint{TT, <: FlexCachedArray} ) where {TT} = unwrap(parent(adj))'
+# ----------------------------------------------------------------
+# We can define an `unwrap` function that will convert the 
+# FlexCachedArray into a PtrArray which circumvents a lot of 
+# performance problems. 
+# This should really be considered a workaround though. A better 
+# approach would be to make FlexCachedArray performant. It is just 
+# not clear how hard that would be.
 
+# Fallback
+unwrap(x::AbstractArray) = x
+
+# this one is the primary use-case
 unwrap(x::FlexCachedArray) = x.A
 
-unwrap(x::Array) = x
+# a few other cases where we can improve on the fall-bask 
+unwrap(adj::Adjoint{TT, <: FlexCachedArray} ) where {TT} = unwrap(parent(adj))'
+unwrap(adj::Transpose{TT, <: FlexCachedArray} ) where {TT} = unwrap(parent(adj))'
+unwrap(adj::Adjoint{TT, <: PtrArray} ) where {TT} = parent(adj)'
+unwrap(adj::Transpose{TT, <: PtrArray} ) where {TT} = parent(adj)'
 
-# @deprecate Base.parent(pA::FlexCachedArray) unwrap(pA)
+# for some reason @deprecate doesn't work here. Getting 
+# error messages we don't understand. This here will do until 
+# we tag the next version. 
+function Base.parent(pA::FlexCachedArray)
+   @warn("Use of `parent` to obtain the PtrArray of a FlexCachedArray is deprecated. Use `unwrap` instead.")
+   return unwrap(pA)
+end
 
 
 # ----------------------------------- 
