@@ -1,7 +1,7 @@
 
 module Testing
 
-using ObjectPools: acquire!, release!, FlexArray, FlexArrayCache, ArrayPool, TSafe
+using ObjectPools: acquire!, release!, FlexArray, FlexArrayCache, ArrayPool, TSafe, unwrap
 
 
 function chebbasis!(T, x::Real) 
@@ -49,13 +49,13 @@ end
 
 function chebbasis(pool::Union{ArrayPool, TSafe{<: ArrayPool}}, x::Real, N) 
    T = acquire!(pool, :T, (N,), typeof(x))
-   chebbasis!(parent(T), x) 
+   chebbasis!(unwrap(T), x) 
    return T 
 end
 
 function chebbasis(temp::Union{FlexArray, FlexArrayCache, TSafe}, x::Real, N)
    T = acquire!(temp, (N,), typeof(x))
-   chebbasis!(parent(T), x) 
+   chebbasis!(unwrap(T), x) 
    return T 
 end
 
@@ -70,13 +70,13 @@ end
 
 function chebbasis(pool::Union{ArrayPool, TSafe{<: ArrayPool}}, X::AbstractVector{<: Real}, N) 
    T = acquire!(pool, :T, (length(X), N), eltype(X))
-   chebbasis!(parent(T), X) 
+   chebbasis!(unwrap(T), X) 
    return T 
 end
 
 function chebbasis(temp::Union{FlexArray, FlexArrayCache, TSafe}, X::AbstractVector{<: Real}, N) 
    T = acquire!(temp, (length(X), N), eltype(X))
-   chebbasis!(parent(T), X) 
+   chebbasis!(unwrap(T), X) 
    return T 
 end
 
