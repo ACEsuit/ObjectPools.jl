@@ -104,11 +104,14 @@ release!(A)
 ```
 The `acquire!` function obtains an array of size `(N,)` from the stack (in the current thread). After the array is no longer needed, it can be returned to the stack via `release!`. It is ok if it is never released. Once there is no longer a reference to `A`, it will just be garbage collected. 
 
-One can also use the `unwrap` function to get the `PtrArray` of a FlexCachedArray:
+One can also use the `unwrap` function to get the `PtrArray` of a `FlexCachedArray` or adjoint/transpose of a `FlexCachedArray`:
 ```julia
 cache = FlexArrayCache()
-A = acquire!(cache, (N, ), Float64)
-Aptr = unwrap(A)
+A = acquire!(cache, (M, N), Float64)
+Aptr = unwrap(A) # PtrArray of size (M, N)
+
+At = A' # Adjoint of A in FlexCachedArray
+Atptr = unwrap(At) # PtrArray of At with size (N, M)
 ```
 
 Warning: Use of `parent` to obtain the `PtrArray` of a `FlexCachedArray` is deprecated. Always use `unwrap` instead.
