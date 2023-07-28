@@ -56,11 +56,15 @@ unwrap(adj::Transpose{TT, <: PtrArray} ) where {TT} = parent(adj)'
 # for some reason @deprecate doesn't work here. Getting 
 # error messages we don't understand. This here will do until 
 # we tag the next version. 
-function Base.parent(pA::FlexCachedArray)
-   @warn("Use of `parent` to obtain the PtrArray of a FlexCachedArray is deprecated. Use `unwrap` instead.")
-   return unwrap(pA)
-end
-
+# In Julia 1.10-beta1 it seems that `parent` is used in ways we didn't 
+# expect, causing warnings all over the place, hence we keep this only for 
+# older versions of Julia. 
+if VERSION < v"1.10-"
+   function Base.parent(pA::FlexCachedArray)
+      @warn("Use of `parent` to obtain the PtrArray of a FlexCachedArray is deprecated. Use `unwrap` instead.")
+      return unwrap(pA)
+   end
+end 
 
 # ----------------------------------- 
 # FlexArrayCache implementation
